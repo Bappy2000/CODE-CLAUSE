@@ -1,0 +1,73 @@
+mport java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+
+public class NextWordPrediction {
+    private static final int ORDER = 2; // Markov chain order
+    private Map<String, List<String>> model; // Markov chain model
+
+    public NextWordPrediction() {
+        model = new HashMap<>();
+    }
+
+    public void train(String filename) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] words = line.split(" ");
+                if (words.length > ORDER) {
+                    for (int i = 0; i < words.length - ORDER; i++) {
+                        String prefix = "";
+                        for (int j = i; j < i + ORDER; j++) {
+                            prefix += words[j] + " ";
+                        }
+                        prefix = prefix.trim();
+
+                        String suffix = words[i + ORDER];
+                        if (model.containsKey(prefix)) {
+                            model.get(prefix).add(suffix);
+                        } else {
+                            List<String> suffixes = new ArrayList<>();
+                            suffixes.add(suffix);
+                            model.put(prefix, suffixes);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String predict(String prefix) {
+        List<String> suffixes = model.get(prefix);
+        if (suffixes == null) {
+            return null;
+        }
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(suffixes.size());
+        return suffixes.get(randomIndex);
+    }
+
+    public static void main(String[] args) {
+        NextWordPrediction predictor = new NextWordPrediction();
+        predictor.train("corpus.txt"); // Replace "corpus.txt" with your training data file
+
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        do {
+            System.out.print("Enter a prefix or 'exit' to quit: ");
+            input = scanner.nextLine().trim();
+            if (!input.equalsIgnoreCase("exit")) {
+                String prediction = predictor.predict(input);
+                if (prediction != null) {
+                    System.out.println("Predicted next word: " + prediction);
+                } else {
+                    System.out.println("No prediction found for the given prefix.");
+                }
+                System.out.println();
+            }
+        } while (!input.equalsIgnoreCase("exit"));
+    }
+}
