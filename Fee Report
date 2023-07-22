@@ -1,0 +1,37 @@
+import java.util.Scanner;
+
+public class FeeReportGenerator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt the user to enter fee details
+        System.out.print("Enter student name: ");
+        String studentName = scanner.nextLine();
+
+        System.out.print("Enter student ID: ");
+        int studentId = scanner.nextInt();
+
+        System.out.print("Enter tuition fee amount: ");
+        double tuitionFee = scanner.nextDouble();
+
+        System.out.print("Enter library fee amount: ");
+        double libraryFee = scanner.nextDouble();
+
+        System.out.print("Enter examination fee amount: ");
+        double examinationFee = scanner.nextDouble();
+
+        // Calculate the total fee
+        double totalFee = tuitionFee + libraryFee + examinationFee;
+
+        // Print the fee report
+        System.out.println("\nFee Report");
+        System.out.println("Student Name: " + studentName);
+        System.out.println("Student ID: " + studentId);
+        System.out.println("Tuition Fee: $" + tuitionFee);
+        System.out.println("Library Fee: $" + libraryFee);
+        System.out.println("Examination Fee: $" + examinationFee);
+        System.out.println("Total Fee: $" + totalFee);
+
+        scanner.close();
+    }
+}
